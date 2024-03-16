@@ -1,0 +1,4 @@
+*.pth
+*.whl
+dataset/fpv_yolo_manual_ds/
+__pycache__

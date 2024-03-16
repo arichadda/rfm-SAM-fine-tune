@@ -1,6 +1,6 @@
 DATASET:
-  TRAIN_PATH: "./dataset/inbreast-mass/train"
-  TEST_PATH: "./dataset/inbreast-mass/test"
+  TRAIN_PATH: "dataset/fpv_yolo_manual_ds/train"
+  TEST_PATH: "dataset/fpv_yolo_manual_ds/val"
   IMAGE_FORMAT: ".png"
 
 SAM:
@@ -10,4 +10,4 @@ SAM:
 TRAIN:
   BATCH_SIZE: 1
   NUM_EPOCHS: 50
-  LEARNING_RATE: 0.0001
+  LEARNING_RATE: 1e-4
