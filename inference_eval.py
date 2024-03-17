@@ -1,3 +1,4 @@
+import os
 import torch
 import monai
 from tqdm import tqdm
@@ -17,6 +18,7 @@ import yaml
 import torch.nn.functional as F
 import monai
 import numpy as np
+from cv2 import imwrite
 """
 This file compute the evaluation metric (Dice cross entropy loss) for all trained LoRA SAM with different ranks. This gives the plot that is in ./plots/rank_comparison.jpg
 which compares the performances on test the test set.
@@ -27,7 +29,8 @@ seg_loss = monai.losses.DiceCELoss(sigmoid=True, squared_pred=True, reduction='m
 # Load the config file
 with open("./config.yaml", "r") as ymlfile:
    config_file = yaml.load(ymlfile, Loader=yaml.Loader)
-rank_list = [2, 4, 6, 8, 16, 32, 64, 128, 256, 512]
+# rank_list = [2, 4, 6, 8, 16, 32, 64, 128, 256, 512]
+rank_list = [512]
 rank_loss = []
 total_baseline_loss = []
 baseline_loss = 0
@@ -86,6 +89,9 @@ with torch.no_grad():
 
             total_score.append(loss.item())
             
+            imwrite(os.path.join("inference_out", "preds", f"{i}.png"), outputs[0]['low_res_logits'].squeeze(0).permute(1, 2, 0).detach().cpu().numpy().astype(np.float32) * 255)
+            imwrite(os.path.join("inference_out", "gt", f"{i}.png"), batch[0]["ground_truth_mask"].unsqueeze(-1).detach().cpu().numpy().astype(np.float32) * 255)
+            
 
         print(f'Mean dice score: {mean(total_score)}')
         rank_loss.append(mean(total_score))
@@ -96,16 +102,17 @@ print("RANK LOSS :", rank_loss)
 width = 0.25  # the width of the bars
 multiplier = 0
 models_results= {"Baseline": baseline_loss,
-                 "Rank 2": rank_loss[0], 
-                 "Rank 4": rank_loss[1], 
-                 "Rank 6": rank_loss[2],
-                 "Rank 8": rank_loss[3],
-                 "Rank 16": rank_loss[4],
-                 "Rank 32": rank_loss[5],
-                 "Rank 64": rank_loss[6],
-                 "Rank 128": rank_loss[7],
-                 "Rank 256": rank_loss[8],
-                 "Rank 512": rank_loss[9]
+                #  "Rank 2": rank_loss[0], 
+                #  "Rank 4": rank_loss[1], 
+                #  "Rank 6": rank_loss[2],
+                #  "Rank 8": rank_loss[3],
+                #  "Rank 16": rank_loss[4],
+                #  "Rank 32": rank_loss[5],
+                #  "Rank 64": rank_loss[6],
+                #  "Rank 128": rank_loss[7],
+                #  "Rank 256": rank_loss[8],
+                #  "Rank 512": rank_loss[9]
+                 "Rank 512": rank_loss[0]
                  }
 eval_scores_name = ["Rank"]
 x = np.arange(len(eval_scores_name))

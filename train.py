@@ -2,19 +2,14 @@ import torch
 import monai
 from tqdm import tqdm
 from statistics import mean
-from torch.utils.data import Dataset, DataLoader
-from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
 from torch.optim import Adam
-from torch.nn.functional import threshold, normalize
-from torchvision.utils import save_image
 import src.utils as utils
 from src.dataloader import DatasetSegmentation, collate_fn
 from src.processor import Samprocessor
-from src.segment_anything import build_sam_vit_b, SamPredictor
+from src.segment_anything import build_sam_vit_b
 from src.lora import LoRA_sam
-import matplotlib.pyplot as plt
 import yaml
-import torch.nn.functional as F
 
 """
 This file is used to train a LoRA_sam model. I use that monai DiceLoss for the training. The batch size and number of epochs are taken from the configuration file.
